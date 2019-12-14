@@ -1,6 +1,70 @@
 <html>
+
+<head>
+    <title>YBIGTA</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
 <body>
-    <h1>YBIGTA 16기 지원서는 12월 16일 (월)부터 작성 가능합니다.</h1>
-    <h3></h3>
+    <div class="container">
+        <h2>YBIGTA 16기 지원서는 <br>12월 16일 (월)부터 작성 가능합니다.</h2>
+        <h4>아래 전화번호를 적어주시면 16일에 지원서 링크를 문자로 보내드리겠습니다 :)</h4>
+        <div class="container card"
+             style="margin-top: 50px;">
+            <form action="/phone"
+                  method="post"
+                  style="padding-top: 20px;">
+                <div class="alert alert-danger"
+                     id="phoneNumAlert"
+                     role="alert"
+                     style="display: none;">
+                    올바른 전화번호를 입력해주세요!
+                </div>
+                <div class="form-group">
+                    <label for="phoneNum">전화번호 ('-' 없이 번호만 입력)</label>
+                    <input class="form-control"
+                           type="text"
+                           id="phoneNum"
+                           maxlength="11">
+                </div>
+                <button type="button"
+                        id="submitBtn"
+                        class="btn btn-primary">제출</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        $('#submitBtn').click(function () {
+            var num = $('#phoneNum').val();
+            console.log('num: ' + num + ', length: ' + num.length);
+            if (num.length != 11 || isNaN(num)) {
+                console.log('num != 11 or isNaN(num)');
+                $('#phoneNumAlert').css('display', 'block');
+            } else {
+                if (num.slice(0, 2) != '01') {
+                    console.log('not valid phone num');
+                    $('#phoneNumAlert').css('display', 'block');
+                } else {
+                    console.log('posting phone num: ' + num);
+                    $.ajax({
+                        type: "POST",
+                        url: "/phone",
+                        dataType: "json",
+                        contentType: "application/json",
+                        data: JSON.stringify({"phoneNum": num}),
+                        crossOrigin: true,
+                        success: function() {
+                            window.location.href = '/thanks';
+                        }
+                    })
+                }
+            }
+        });
+    </script>
 </body>
+
 </html>
